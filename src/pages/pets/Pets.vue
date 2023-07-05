@@ -42,6 +42,10 @@
                             <label for="data_nascimento">Data de Nascimento</label>
                         </div>
                         <div class="input-field col s6">
+                            <input id="data_nascimento" type="date" class="validate" v-model="data_falecimento">
+                            <label for="data_nascimento">Data de Falecimento</label>
+                        </div>
+                        <div class="input-field col s6">
                             <input id="peso" type="text" class="validate" v-model="peso">
                             <label for="peso">Peso</label>
                         </div>
@@ -99,6 +103,7 @@ export default {
                 self.raca = self.pet.raca_id
                 self.especie = self.pet.especie_id
                 self.data_nascimento = self.pet.data_nascimento
+                self.data_falecimento = self.pet.data_falecimento
             }
         }
     },
