@@ -24,7 +24,7 @@
 
                             <select ref="selectTipo" v-model="tipo">
                                 <option value="" disabled>Selecione</option>
-                                <option value="1">Cliente</option>
+                                <option value="1">Cliente/Tutor</option>
                                 <option value="2">Veterinário</option>
                             </select>
 
@@ -87,6 +87,13 @@ export default {
     },
     mounted() {
         this.initSelect()
+    },
+    created() {
+        if (this.$route.name !== 'Cadastro') {
+            return
+        }
+
+        this.tipo = this.$route.query.tutor ? '1' : ''
     },
     methods: {
         initSelect() {

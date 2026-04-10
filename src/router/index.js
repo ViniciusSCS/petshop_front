@@ -5,10 +5,11 @@ import Login from "../pages/login/Login";
 import Cadastro from "../template/Cadastro";
 import Pets from "../pages/pets/Pets";
 import Procedimentos from "../pages/procedimentos/Procedimentos";
+import Medicamento from "../pages/medicamento/Medicamento.vue";
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
     mode: 'history',
     routes: [
         {
@@ -28,7 +29,7 @@ export default new Router({
         },
         {
             path: '/pet/cadastro',
-            name: 'Cadastro',
+            name: 'PetsCadastro',
             component: Pets
         },
         {
@@ -38,13 +39,37 @@ export default new Router({
         },
         {
             path: '/procedimento/cadastro/:id',
-            name: 'Cadastro',
-            component: Procedimentos
+            name: 'ProcedimentoCadastro',
+            component: Procedimentos,
+            meta: { requiresAuth: true, requiresVet: true }
         },
-        // {
-        //     path: '/medicamento/cadastro',
-        //     name: 'Cadastro',
-        //     component: Medicamento
-        // },
+        {
+            path: '/medicamento/cadastro',
+            name: 'MedicamentoCadastro',
+            component: Medicamento,
+            meta: { requiresAuth: true, requiresVet: true }
+        },
     ]
 })
+
+router.beforeEach((to, from, next) => {
+    const usuario = JSON.parse(sessionStorage.getItem('usuario'))
+
+    if (to.path === '/cadastro') {
+        return next()
+    }
+
+    // 🔐 precisa estar logado
+    if (to.meta.requiresAuth && !usuario) {
+        return next('/login')
+    }
+
+    // 🧠 precisa ser veterinário
+    if (to.meta.requiresVet && Number(usuario.tipo_id) !== 1) {
+        return next('/')
+    }
+
+    next()
+})
+
+export default router

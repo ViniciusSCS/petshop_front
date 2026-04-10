@@ -1,9 +1,25 @@
 <template>
-    <router-link :class="'btn waves-effect waves-light ' + cor + ' col ' + tamanho" :to="''+ url +''" :title="titulo">
+    <!-- BOTÃO COMO LINK -->
+    <router-link
+        v-if="url"
+        :class="'btn waves-effect waves-light ' + cor + ' col ' + tamanho"
+        :to="url"
+        :title="titulo"
+    >
         {{ acao }}
         <i :class="tipo_icone + ' fa-' + icone + ' ' + tamanho_icone"></i>
     </router-link>
 
+    <!-- BOTÃO COMO AÇÃO -->
+    <button
+        v-else
+        :class="'btn waves-effect waves-light ' + cor + ' col ' + tamanho"
+        :title="titulo"
+        @click="$emit('click')"
+    >
+        {{ acao }}
+        <i :class="tipo_icone + ' fa-' + icone + ' ' + tamanho_icone"></i>
+    </button>
 </template>
 
 <script>

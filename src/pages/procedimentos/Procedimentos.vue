@@ -7,13 +7,13 @@
                     <div class="row">
                         <div class="row">
                             <div class="input-field col s6">
-                                <label>PET</label>
-                                <select class="browser-default" v-model="pet">
-                                    <option value="" disabled selected></option>
-                                    <option v-for="pet in pet_selecionado" v-bind:value="pet.id">
-                                        {{ pet.nome }}
-                                    </option>
-                                </select>
+                                <input
+                                    id="pet_nome"
+                                    type="text"
+                                    v-model="pet_obj.nome"
+                                    readonly
+                                >
+                                <label for="pet_nome" class="active">PET</label>
                             </div>
                             <div class="input-field col s6">
                                 <label>
@@ -36,15 +36,21 @@
                             </div>
                         </div>
                         <div class="row">
-                            <div class="input-field col s6">
-                                <label>Vacina</label>
-                                <select class="browser-default" v-model="vacina" @change="vacinas_select()">
-                                    <option value="" disabled selected></option>
-                                    <option v-for="vacina in vacinas" v-bind:value="vacina.id">
-                                        {{ vacina.descricao }}
-                                    </option>
-                                </select>
-                            </div>
+                            <select-custom
+                                label="Vacina"
+                                :options="vacina"
+                                v-model="vacina"
+                                @change="vacinas_select()"
+                            />
+<!--                            <div class="input-field col s6">-->
+<!--                                <label>Vacina</label>-->
+<!--                                <select class="browser-default" v-model="vacina" @change="vacinas_select()">-->
+<!--                                    <option value="" disabled selected></option>-->
+<!--                                    <option v-for="vacina in vacinas" v-bind:value="vacina.id">-->
+<!--                                        {{ vacina.descricao }}-->
+<!--                                    </option>-->
+<!--                                </select>-->
+<!--                            </div>-->
                             <div class="input-field col s6">
                                 <input id="data_vacina" type="date" class="validate" v-model="data_vacina">
                                 <label for="data_vacina">Data da Vacinação</label>
@@ -129,7 +135,12 @@ export default {
     created() {
         var self = this
 
-        self.pet = self.$store.getters.getPets
+        var pet = self.$store.getters.getPets
+
+        if (pet) {
+            self.pet_obj = pet
+            self.pet_id = pet.id
+        }
     },
     mounted: function () {
         this.pets_select()
@@ -142,7 +153,9 @@ export default {
             data_castracao: '',
             descricao_cirurgica: '',
 
-            pet: false,
+            pet_id: '',
+            pet_obj: null,
+
             castrado: null,
             cirurgia: null,
             banho_tosa: null,
@@ -157,7 +170,7 @@ export default {
             var self = this
 
             self.$http.post(self.$urlApi + 'procedimento/cadastro', {
-                pet_id: self.pet,
+                pet_id: self.pet_id,
                 vacina: self.vacina,
                 castrado: self.castrado,
                 cirurgia: self.cirurgia,
@@ -199,7 +212,7 @@ export default {
 
         clear() {
             var self = this
-            self.pet = ''
+            self.pet_id = ''
             self.vacina = ''
             self.castrado = ''
             self.cirurgia = ''
@@ -212,11 +225,11 @@ export default {
         pets_select: function () {
             var self = this
 
-            self.$http.get(self.$urlApi + 'pet/select/' + self.pet.id,
+            self.$http.get(self.$urlApi + 'pet/select/' + self.pet_id,
                 {"headers": {"authorization": "Bearer " + self.$store.getters.getToken}})
                 .then(function (response) {
                     if (response.data.status) {
-                        self.pet_selecionado = response.data.pets
+                        self.pet_selecionado = response.data.pet
                     } else
                         sweetAlert(response.data.erro)
                 })

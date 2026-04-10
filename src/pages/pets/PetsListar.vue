@@ -1,8 +1,17 @@
 <template>
     <span slot="principal">
-        <div class="container">
+        <div class="container-wide">
             <div class="row"></div>
             <div class="row">
+                <botao
+                    v-if="usuario.tipo_id === 1"
+                    acao="Cadastrar Tutor"
+                    tipo_icone="fas"
+                    cor="green"
+                    icone="user-plus"
+                    @click="$router.push('/cadastro?tutor=true')"
+                />
+
                 <botao acao="Cadastrar Pet"
                        tipo_icone="fas"
                        cor="blue"
@@ -11,7 +20,8 @@
                        url="/pet/cadastro"
                 />
 
-                <botao acao="Cadastrar Medicamento"
+                <botao v-if="usuario.tipo_id === 1"
+                       acao="Cadastrar Medicamento"
                        tipo_icone="fas"
                        cor="blue"
                        icone="plus"
@@ -24,12 +34,13 @@
                     <table class="responsive-table">
                         <thead>
                             <tr>
-                                <th>Nome</th>
+                                <th>Nome do Pet</th>
                                 <th>Espécie</th>
                                 <th>Raça</th>
                                 <th>Data Nascimento</th>
                                 <th>Data Faleciento</th>
                                 <th>Idade</th>
+                                <th v-if="usuario.tipo_id === 1">Tutor</th>
                                 <th>Ações</th>
                             </tr>
                         </thead>
@@ -42,17 +53,19 @@
                                 <td>{{ pet.data_nascimento }}</td>
                                 <td>{{ pet.data_falecimento ? pet.data_falecimento : "-" }} </td>
                                 <td>{{ pet.idade }}</td>
+                                <td v-if="usuario.tipo_id === 1">{{ pet.tutor.name }} </td>
                                 <td>
-                                    <botao tipo_icone="fas"
-                                           icone="clipboard-check"
-                                           titulo="Cadastrar Procedimentos"
-                                           v-on:click.native="procedimento(pet.id)"
+                                    <botao v-if="usuario.tipo_id === 1"
+                                        tipo_icone="fas"
+                                        icone="clipboard-check"
+                                        titulo="Cadastrar Procedimentos"
+                                        @click="procedimento(pet.id)"
                                     />
                                     <botao tipo_icone="fas"
                                            icone="edit"
                                            titulo="Editar Pet"
                                            cor="orange"
-                                           v-on:click.native="editar(pet.id)"
+                                           @click="editar(pet.id)"
                                     />
                                     <botao tipo_icone="fas"
                                            icone="cross"
@@ -79,7 +92,6 @@
             </div>
         </div>
     </span>
-
 </template>
 
 <script>
@@ -190,5 +202,9 @@ export default {
 </script>
 
 <style scoped>
-
+.container-wide {
+    width: 95%;
+    max-width: 1600px;
+    margin: 0 auto;
+}
 </style>
