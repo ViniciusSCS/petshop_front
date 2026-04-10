@@ -21,12 +21,14 @@
 
                         <grid class="input-field" tamanho="6">
                             <i class="material-icons prefix">accessibility</i>
-                            <label>Tipo de Cadastro</label>
-                            <select class="browser-default" v-model="tipo">
-                                  <option value="" disabled selected></option>
-                                  <option value="1">Cliente</option>
-                                  <option value="2">Veterinário</option>
+
+                            <select ref="selectTipo" v-model="tipo">
+                                <option value="" disabled>Selecione</option>
+                                <option value="1">Cliente</option>
+                                <option value="2">Veterinário</option>
                             </select>
+
+                            <label :class="{ active: tipo }">Tipo de Cadastro</label>
                         </grid>
                     </div>
 
@@ -83,7 +85,19 @@ export default {
             password_confirmation: '',
         }
     },
+    mounted() {
+        this.initSelect()
+    },
     methods: {
+        initSelect() {
+            this.$nextTick(() => {
+                const elems = this.$refs.selectTipo
+                if (elems) {
+                    M.FormSelect.init(elems)
+                }
+            })
+        },
+
         cadastro() {
             var self = this
             self.$http.post(self.$urlApi + 'cadastro', {
