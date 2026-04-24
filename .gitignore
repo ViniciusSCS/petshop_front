@@ -14,3 +14,8 @@ yarn-error.log*
 *.sln
 yarn.lock
 package-lock.js
+
+# Enviroment
+.env
+.env.development
+.env.production

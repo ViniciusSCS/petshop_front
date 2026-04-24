@@ -12,7 +12,7 @@ Vue.use(Vuex, lodash)
 Vue.config.productionTip = false
 
 Vue.prototype.$http = axios
-Vue.prototype.$urlApi = 'http://localhost:8010/api/'
+Vue.prototype.$urlApi = process.env.VUE_APP_API_URL
 
 var store = {
     state: {
