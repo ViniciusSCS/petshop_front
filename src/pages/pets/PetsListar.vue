@@ -31,7 +31,7 @@
                 />
 
                 <grid tamanho="12">
-                    <table class="responsive-table">
+                    <table class="striped">
                         <thead>
                             <tr>
                                 <th>Nome do Pet</th>

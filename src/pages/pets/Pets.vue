@@ -103,8 +103,6 @@ export default {
                 self.nome = self.pet.nome
                 self.sexo = self.pet.sexo
                 self.peso = self.pet.peso
-                self.raca = self.pet.raca_id
-                self.especie = self.pet.especie_id
                 self.data_nascimento = self.pet.data_nascimento
                 self.data_falecimento = self.pet.data_falecimento
             }
@@ -115,13 +113,21 @@ export default {
             return this.usuario && this.usuario.tipo_id === 1
         }
     },
-    mounted: function () {
+    mounted() {
         this.usuario = this.$store.getters.getUsuario
-        this.especies_select()
-        if (this.pet != false)
-            this.racas_select()
-        else
-            this.clear()
+
+        this.especies_select().then(() => {
+
+            if (this.pet) {
+
+                this.especie = this.pet.especie_id
+
+                this.racas_select().then(() => {
+                    this.raca = this.pet.raca_id
+                })
+            }
+
+        })
 
         if (this.isVeterinario) {
             this.tutores_select()
@@ -241,43 +247,27 @@ export default {
             self.user_id = ''
         },
 
-        especies_select: function () {
+        especies_select() {
             var self = this
 
-            self.$http.get(self.$urlApi + 'especie/select',
+            return self.$http.get(self.$urlApi + 'especie/select',
                 {"headers": {"authorization": "Bearer " + self.$store.getters.getToken}})
                 .then(function (response) {
                     if (response.data.status) {
                         self.especies = response.data.especies
-                    } else
-                        sweetAlert(response.data.erro)
-                })
-                .catch(e => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'ERRO, tente novamente mais tarde!',
-                    })
+                    }
                 })
         },
 
-        racas_select: function () {
+        racas_select() {
             var self = this
 
-            self.$http.get(self.$urlApi + 'raca/select/' + self.especie,
+            return self.$http.get(self.$urlApi + 'raca/select/' + self.especie,
                 {"headers": {"authorization": "Bearer " + self.$store.getters.getToken}})
                 .then(function (response) {
                     if (response.data.status) {
                         self.racas = response.data.racas
-                    } else
-                        sweetAlert(response.data.erro)
-                })
-                .catch(e => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'ERRO, tente novamente mais tarde!',
-                    })
+                    }
                 })
         },
 
@@ -287,6 +277,11 @@ export default {
             }).then(response => {
                 this.tutores = response.data.usuarios
             })
+        },
+
+        onChangeEspecie() {
+            this.raca = ''
+            this.racas_select()
         }
     }
 }
