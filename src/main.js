@@ -8,11 +8,15 @@ import lodash from 'lodash'
 import router from './router'
 import Datepicker from 'vuejs-datepicker';
 
+const API =
+    process.env.VUE_APP_API_URL ||
+    'https://petshop-api-ynjn.onrender.com/api/'
+
 Vue.use(Vuex, lodash)
 Vue.config.productionTip = false
 
 Vue.prototype.$http = axios
-Vue.prototype.$urlApi = process.env.VUE_APP_API_URL
+Vue.prototype.$urlApi = API
 
 var store = {
     state: {
